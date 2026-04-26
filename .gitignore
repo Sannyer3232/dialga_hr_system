@@ -3,5 +3,5 @@
 *.pyc
 .env
 
-/back-end/db.sqlite3
+**.sqlite3
 GEMINI.md
