@@ -2,3 +2,5 @@
 /back_end/accounts/__pycache__/
 *.pyc
 .env
+
+/back_end/db.sqlite3
