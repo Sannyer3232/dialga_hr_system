@@ -1,6 +1,6 @@
 /back-end/.venv/
-/back_end/accounts/__pycache__/
+/back-end/accounts/__pycache__/
 *.pyc
 .env
 
-/back_end/db.sqlite3
+/back-end/db.sqlite3
