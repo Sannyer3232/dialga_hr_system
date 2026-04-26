@@ -14,6 +14,7 @@ class EducationLevel(models.Model):
 class Collaborator(models.Model):
 
     id = models.AutoField(unique=True, verbose_name="id",primary_key=True)
+    full_name = models.CharField(max_length=250, verbose_name="Full Name")
     date_of_birth = models.DateField(verbose_name="Date of birth")
     service_years = models.IntegerField(verbose_name="Service times in years")
     work_distance = models.IntegerField(verbose_name="Distance from Residence to Work")
