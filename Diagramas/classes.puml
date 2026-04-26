@@ -1,0 +1,74 @@
+@startuml
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+title Diagrama de Classes Refatorado - Sistema de RH
+
+class Colaborador {
+    - id: Integer
+    - idade: Integer
+    - tempoServico: Integer
+    - distanciaTrabalho: Integer
+    - nivelEducacao: Integer
+}
+
+class PerfilSaude {
+    - id: Integer
+    - peso: Float
+    - altura: Float
+    - imc: Float
+    - bebedorSocial: Boolean
+    - fumanteSocial: Boolean
+    + calcularIMC(): Float
+}
+
+class PerfilFamiliar {
+    - id: Integer
+    - filhos: Integer
+    - pets: Integer
+}
+
+class MotivoAusencia {
+    - id: Integer
+    - codigo: Integer
+    - descricao: String
+}
+
+class ContextoMensalRH {
+    - id: Integer
+    - mesReferencia: Integer
+    - cargaTrabalhoMedia: Float
+    - metaAtingida: Integer
+}
+
+class RegistroAusencia {
+    - idRegistro: UUID
+    - mesAusencia: Integer
+    - diaSemana: Integer
+    - estacaoAno: Integer
+    - despesaTransporte: Float
+    - falhaDisciplinar: Boolean
+    - tempoAusenciaHoras: Float
+    + registrarFalta(): void
+}
+
+' Relacionamentos do Colaborador
+Colaborador "1" -- "1" PerfilSaude : possui >
+Colaborador "1" -- "1" PerfilFamiliar : possui >
+Colaborador "1" -- "0..*" RegistroAusencia : possui >
+
+' Relacionamentos do Registro de Ausência
+RegistroAusencia "*" -- "1" MotivoAusencia : classificado por >
+RegistroAusencia "*" -- "1" ContextoMensalRH : ocorre sob >
+
+note right of ContextoMensalRH
+  Métricas da empresa
+  para o mês da ausência.
+end note
+
+note right of MotivoAusencia
+  Tabela de motivos possíveis.
+end note
+
+@enduml
