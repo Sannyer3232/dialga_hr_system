@@ -1,6 +1,7 @@
 /back-end/.venv/
-/back-end/accounts/__pycache__/
+**/__pycache__/
 *.pyc
 .env
 
 /back-end/db.sqlite3
+GEMINI.md
