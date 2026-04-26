@@ -4,6 +4,7 @@ from datetime import date
 class EducationLevel(models.Model):
 
     id = models.AutoField(unique=True, verbose_name="ID", primary_key=True)
+    code = models.IntegerField(unique=True, verbose_name="Code of Education Leval")
     description = models.CharField(max_length= 100, verbose_name="Description")
 
     def __str__(self):
