@@ -3,7 +3,7 @@ from datetime import date
 
 class EducationLevel(models.Model):
 
-    id = models.IntegerField(unique=True, verbose_name="ID", primary_key=True)
+    id = models.AutoField(unique=True, verbose_name="ID", primary_key=True)
     description = models.CharField(max_length= 100, verbose_name="Description")
 
     def __str__(self):
@@ -12,7 +12,7 @@ class EducationLevel(models.Model):
 
 class Collaborator(models.Model):
 
-    id = models.IntegerField(unique=True, verbose_name="ID",primary_key=True)
+    id = models.AutoField(unique=True, verbose_name="id",primary_key=True)
     date_of_birth = models.DateField(verbose_name="Date of birth")
     service_years = models.IntegerField(verbose_name="Service times in years")
     work_distance = models.IntegerField(verbose_name="Distance from Residence to Work")
@@ -42,7 +42,7 @@ class HealthProfile(models.Model):
         on_delete= models.CASCADE,
         related_name='health_profile'
     )
-    id = models.IntegerField(unique=True, primary_key=True)
+    id = models.AutoField(unique=True, primary_key=True)
     weight = models.FloatField(verbose_name="Weight in Kg")
     height = models.FloatField(verbose_name="Height in cm")
     bmi = models.FloatField(verbose_name="Body Mass Index", null=True, blank=True)
@@ -65,7 +65,7 @@ class FamiliarProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="familiar_profile"
     )
-    id = models.IntegerField(unique=True, primary_key=True)
+    id = models.AutoField(unique=True, primary_key=True)
     sons = models.IntegerField(default=0, verbose_name="Quantity of sons")
     pets = models.IntegerField(default=0, verbose_name="Quantity os pets")
 
