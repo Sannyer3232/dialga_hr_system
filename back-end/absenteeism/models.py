@@ -43,7 +43,7 @@ class AbsenteeismRegister(models.Model):
         TUESDAY = 3, "Tuesday"
         WEDNESDAY = 4, "Wednesday"
         THURSDAY = 5, "Thursday"
-        Friday = 6, "Friday"
+        FRIDAY = 6, "Friday"
         SATURDAY = 7, "Saturday"
     
     class Seasons(models.IntegerChoices):

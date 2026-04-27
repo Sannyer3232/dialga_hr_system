@@ -31,7 +31,7 @@ class Collaborator(models.Model):
         #Calcula a idade do colaborador com base na data de nascimento
         
         now = date.today()
-        birthday_has_passed = (now.month, now.day) >= (self.data_of_birth.month, self.data_of_birth.month.day)
+        birthday_has_passed = (now.month, now.day) >= (self.date_of_birth.month, self.date_of_birth.month.day)
         years = now.year - self.date_of_birth.year
         return years if birthday_has_passed else years - 1
     
