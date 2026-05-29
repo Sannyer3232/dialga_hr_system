@@ -1,1 +1,8 @@
 django
+django
+djangorestframework
+joblib
+tensorflow
+scikit-learn
+pandas
+numpy
