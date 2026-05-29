@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes, OpenApiExample
 import pandas as pd
 import joblib
 import numpy as np
@@ -9,6 +10,46 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from django.conf import settings
 
 class ModelMetricsView(APIView):
+    @extend_schema(
+        summary="Calculate Machine Learning Model Metrics",
+        description="Calculates MAE, RMSE, and R2 Score based on a percentage of the demo test data.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "percentage": {"type": "number", "minimum": 1, "maximum": 100}
+                },
+                "required": ["percentage"]
+            }
+        },
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "metrics": {
+                        "type": "object",
+                        "properties": {
+                            "mae": {"type": "number"},
+                            "rmse": {"type": "number"},
+                            "r2_score": {"type": "number"}
+                        }
+                    },
+                    "scatter_plot_data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "actual": {"type": "number"},
+                                "predicted": {"type": "number"}
+                            }
+                        }
+                    }
+                }
+            },
+            400: {"description": "Invalid or missing percentage"},
+            500: {"description": "Internal error processing the model"}
+        }
+    )
     def post(self, request):
         percentage = request.data.get('percentage')
         
