@@ -1,13 +1,20 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes, OpenApiExample
 import pandas as pd
 import joblib
 import numpy as np
 import os
+from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from django.conf import settings
+from .service import AbsenteeismPredictor
+from .models import AbsenteeismRegister
+from django.db.models import Avg
+from datetime import date
+from employees.models import Collaborator
 
 class ModelMetricsView(APIView):
     @extend_schema(
@@ -131,3 +138,151 @@ class ModelMetricsView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ManagerDashboardView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        print(f"O usuario logado é: {user}")
+
+        # 1. Buscar os colaboradores que pertencem a este gerente
+        collaborators = Collaborator.objects.filter(manager=user)
+
+        
+        
+        if not collaborators.exists():
+            return Response({
+                "message": "Nenhum colaborador encontrado para este gerente.",
+                "history": {"actual_total": 0, "predicted_total": 0},
+                "next_month_projection": {"total_estimated_hour": 0}
+            })
+
+        # 2. Buscar os registros de absenteísmo APENAS para esses colaboradores
+        registers = AbsenteeismRegister.objects.filter(collaborator__in=collaborators)
+
+        predictor = AbsenteeismPredictor()
+        
+        # --- PARTE 1: HISTÓRICO (Baseado nos registros passados) ---
+        actual_total = 0
+        predicted_total = 0
+        details = []
+
+        for reg in registers:
+            actual_total += reg.absenteeism_time
+
+            context_data = {
+                'reason_code': reg.reason.code,
+                'month': reg.monthly_context.month_reference,
+                'day_of_week': reg.week_day,
+                'season': reg.season,
+                'transport_expense': reg.transportation_expense,
+                'work_load': reg.monthly_context.work_load_average,
+                'hit_target': reg.monthly_context.hit_target,
+                'disciplinary_failure': reg.disciplinary_failure,
+            }
+            
+            prediction = predictor.predict_collaborator(reg.collaborator, context_data)
+            predicted_total += prediction
+
+            details.append({
+                "collaborator": reg.collaborator.full_name,
+                "actual": reg.absenteeism_time,
+                "predicted": round(prediction, 2),
+                "date": f"{reg.monthly_context.month_reference}/{reg.monthly_context.year_reference}"
+            })
+
+        # --- PARTE 2: PROJEÇÃO FUTURA (Baseado em cada colaborador único) ---
+        next_month_forecast = 0
+        projection_details = []
+
+        today = date.today()
+        next_month = today.month + 1 if today.month < 12 else 1
+
+        avg_context = {
+            'month': next_month,
+            'day_of_week': 3, # Simulamos uma quarta-feira média
+            'season': 1, # Ajuste conforme a estação do ano atual
+            'work_load': 250.0, 
+            'hit_target': 95,
+            'transport_expense': 150.0,
+            'reason_code': 0, # Consulta médica (mais comum)
+            'disciplinary_failure': False
+        }
+
+        for colab in collaborators:
+            # Calcula uma previsão única por colaborador para o próximo mês
+            prediction_next_month = predictor.predict_collaborator(colab, avg_context)
+            next_month_forecast += prediction_next_month
+            
+            projection_details.append({
+                "collaborator": colab.full_name,
+                "estimated_absence_hours": round(prediction_next_month, 2)
+            })
+
+        # --- RESPOSTA FINAL ---
+        return Response({
+            "history": {
+                "actual_total": round(actual_total, 2),
+                "predicted_total": round(predicted_total, 2),
+                "gap": round(actual_total - predicted_total, 2),
+                "details": details
+            },
+            "next_month_projection": {
+                "total_estimated_hour": round(next_month_forecast, 2),
+                "details": projection_details
+            }
+        })
+
+
+class CollaboratorSimulationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+         summary="Simulate Absenteeism (What-if)",
+         description="Simulate a scenario for a specific collaborator by overriding context variables.",
+         request={
+                "application/json": {
+                    "type": "object",
+                    "properties": {
+                        "collaborator_id": {"type": "integer"},
+                        "month": {"type": "integer", "default": 1},
+                        "day_of_week": {"type": "integer", "default": 2},
+                        "work_load": {"type": "number", "default": 250.0},
+                        "hit_target": {"type": "integer", "default": 95},
+                        "reason_code": {"type": "integer", "default": 0},
+                    },
+                    "required": ["collaborator_id"]
+                }
+            }
+        )
+    def post(self, request):
+        user = request.user
+        data = request.data
+        colab_id = data.get('collaborator_id')
+
+        try:
+            colab = Collaborator.objects.get(id = colab_id, manager = user)
+        except Collaborator.DoesNotExist:
+            return Response({"error": "Colaborador não encontrado ou você não tem permissão."}, status=404)
+        
+        predictor = AbsenteeismPredictor()
+
+        simulated_context = {
+                'reason_code': data.get('reason_code', 0),
+                'month': data.get('month', date.today().month),
+                'day_of_week': data.get('day_of_week', 3),
+                'season': data.get('season', 1),
+                'transport_expense': data.get('transport_expense', 150.0),
+                'work_load': data.get('work_load', 250.0),
+                'hit_target': data.get('hit_target', 90),
+                'disciplinary_failure': data.get('disciplinary_failure', False),
+            }
+        prediction = predictor.predict_collaborator(colab, simulated_context)
+
+        return Response({
+                 "collaborator": colab.full_name,
+                 "scenario": simulated_context,
+                 "predicted_absence_hours": round(prediction, 2)
+             })
+
