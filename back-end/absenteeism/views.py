@@ -72,13 +72,13 @@ class ModelMetricsView(APIView):
 
         # Paths
         base_path = os.path.join(settings.BASE_DIR, 'machine_learning_models')
-        model_path = os.path.join(base_path, 'Dialgah_Prev.pkl')
+        model_path = os.path.join(base_path, 'Dialgah_LSTM_Mestre_3.keras')
         scaler_path = os.path.join(base_path, 'Dialgah_Scaler.pkl')
         data_path = os.path.join(base_path, 'data', 'Dialgah_Dados_Teste_DEMO.csv')
 
         try:
             # Load model and scaler
-            model = joblib.load(model_path)
+            model = load_model(model_path)
             scaler = joblib.load(scaler_path)
             
             # Load data
@@ -100,18 +100,14 @@ class ModelMetricsView(APIView):
             # Scale features
             X_scaled = scaler.transform(X)
             
-            # Reshape for model if needed (based on the error, it expects (None, 1, 16))
-            # If the model is a TensorFlow model, it might need this reshape
-            try:
-                if hasattr(model, 'layers'): # Check if it's a Keras/TensorFlow model
-                     X_scaled = X_scaled.reshape((X_scaled.shape[0], 1, X_scaled.shape[1]))
-            except:
-                pass
+            # Reshape for LSTM model: (samples, time_steps, features)
+            # The model expects (None, 1, features)
+            X_reshaped = X_scaled.reshape((X_scaled.shape[0], 1, X_scaled.shape[1]))
 
             # Predict
-            y_pred = model.predict(X_scaled)
+            y_pred = model.predict(X_reshaped, verbose=0)
             
-            # If model returns a 2D array (e.g. from Keras or some scikit-learn models), flatten it
+            # Flatten predictions if they are 2D
             if len(y_pred.shape) > 1 and y_pred.shape[1] == 1:
                 y_pred = y_pred.flatten()
 

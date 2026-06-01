@@ -47,10 +47,44 @@ class Command(BaseCommand):
             level, _ = EducationLevel.objects.get_or_create(code=i, defaults={'description': desc})
             objs_levels.append(level)
         
-        # O CSV não tem 'EducationLevel', então usaremos um padrão/aleatório
-        default_edu_level = objs_levels[0]
-        
         self.stdout.write("✅ Education Levels ready.")
+
+        # 2. Create Absenteeism Reasons
+        reasons_data = [
+            (0, "Certain infectious and parasitic diseases"),
+            (1, "Neoplasms"),
+            (2, "Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism"),
+            (3, "Endocrine, nutritional and metabolic diseases"),
+            (4, "Mental and behavioural disorders"),
+            (5, "Diseases of the nervous system"),
+            (6, "Diseases of the eye and adnexa"),
+            (7, "Diseases of the ear and mastoid process"),
+            (8, "Diseases of the circulatory system"),
+            (9, "Diseases of the respiratory system"),
+            (10, "Diseases of the digestive system"),
+            (11, "Diseases of the skin and subcutaneous tissue"),
+            (12, "Diseases of the musculoskeletal system and connective tissue"),
+            (13, "Diseases of the genitourinary system"),
+            (14, "Pregnancy, childbirth and the puerperium"),
+            (15, "Certain conditions originating in the perinatal period"),
+            (16, "Congenital malformations, deformations and chromosomal abnormalities"),
+            (17, "Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified"),
+            (18, "Injury, poisoning and certain other consequences of external causes"),
+            (19, "External causes of morbidity and mortality"),
+            (20, "Factors influencing health status and contact with health services."),
+            (21, "patient follow-up"),
+            (22, "medical consultation"),
+            (23, "blood donation"),
+            (24, "laboratory examination"),
+            (25, "unjustified absence"),
+            (26, "physiotherapy"),
+            (27, "dental consultation"),
+        ]
+        
+        for code, desc in reasons_data:
+            ReasonAbsenteeism.objects.update_or_create(code=code, defaults={'description': desc})
+        
+        self.stdout.write("✅ Absenteeism Reasons ready.")
 
         # Limpeza para evitar duplicação em execuções sucessivas
         Collaborator.objects.all().delete()
@@ -63,7 +97,7 @@ class Command(BaseCommand):
         manager_indices = set(random.sample(range(50), 15))
 
         for idx, row in df_sample.iterrows():
-            # Dados Sintéticos
+            # ... (rest of collaborator creation)
             nome_completo = f"{random.choice(first_names)} {random.choice(last_names)}"
             # Calcula data de nascimento a partir da idade do CSV
             age = int(row['Age'])
@@ -114,10 +148,14 @@ class Command(BaseCommand):
             
             # Motivo
             reason_code = int(row['Reason for absence'])
-            reason, _ = ReasonAbsenteeism.objects.get_or_create(
-                code=reason_code, 
-                defaults={'description': f"Encoded Reason {reason_code}" if reason_code > 0 else "Medical Consultation"}
-            )
+            try:
+                reason = ReasonAbsenteeism.objects.get(code=reason_code)
+            except ReasonAbsenteeism.DoesNotExist:
+                # Fallback caso venha um código fora do 0-27 no CSV
+                reason, _ = ReasonAbsenteeism.objects.get_or_create(
+                    code=reason_code, 
+                    defaults={'description': f"Encoded Reason {reason_code}"}
+                )
 
             # Contexto Mensal
             month = int(row['Month of absence'])
