@@ -1,0 +1,55 @@
+@import 'variables';
+@import '../../../node_modules/bootstrap/scss/bootstrap';
+
+body {
+    background-color: $body-bg;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+// Glassmorphism Cards
+.dialga-card {
+    background: $glass-bg;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid $glass-border;
+    border-radius: 16px;
+    box-shadow: $glass-shadow;
+    transition: transform 0.3s ease;
+
+    &.neon-prediction {
+        border-left: 4px solid $info;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+}
+
+// Sidebar
+.sidebar {
+    background: $primary;
+    color: white;
+    min-height: 100vh;
+    
+    .nav-link {
+        color: $secondary;
+        &:hover, &.active {
+            color: $info;
+            background: rgba(255,255,255,0.05);
+            border-right: 3px solid $info;
+        }
+    }
+}
+
+// Glowing Cyan "Eye" Elements
+.dialga-eye-badge {
+    background-color: transparent;
+    color: $info;
+    border: 1px solid $info;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5), inset 0 0 10px rgba(0, 212, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: bold;
+    text-shadow: 0 0 5px $info;
+}

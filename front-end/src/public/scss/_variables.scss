@@ -1,0 +1,19 @@
+// Cores Tema Dialga
+$primary: #1B3A57;      // Deep Navy Blue (Corpo)
+$secondary: #A9B0B9;    // Steel Silver (Armadura)
+$info: #00D4FF;         // Diamond Cyan (Neon/Previsões)
+$body-bg: #F4F7F9;      // Soft Metallic Gray (Fundo)
+$dark: #0F2030;
+
+// Sobrescrevendo Bootstrap
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "info": $info,
+  "dark": $dark
+);
+
+// Variáveis Glassmorphism
+$glass-bg: rgba(255, 255, 255, 0.6);
+$glass-border: rgba(255, 255, 255, 0.4);
+$glass-shadow: 0 8px 32px 0 rgba(27, 58, 87, 0.15);
