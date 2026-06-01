@@ -1,8 +1,8 @@
-django
-django
+Django
 djangorestframework
-joblib
-tensorflow
-scikit-learn
+drf-spectacular
 pandas
 numpy
+scikit-learn
+joblib
+tensorflow
