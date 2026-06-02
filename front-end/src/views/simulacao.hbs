@@ -1,43 +1,108 @@
-<div class="container-fluid">
-    <h2 class="mb-4 text-primary">Projeção do Tempo (Simulador What-If)</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="dialga-card p-4">
-                <form id="simulacaoForm">
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Colaborador</label>
-                        <select class="form-select bg-transparent border-secondary" id="colabSelect">
-                            <option value="1">Desenvolvedor Backend</option>
-                            <option value="2">Analista de Qualidade</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Ajuste de Carga de Trabalho (%)</label>
-                        <input type="range" class="form-range" id="workload" min="50" max="150" value="100">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Mês da Projeção</label>
-                        <input type="month" class="form-control bg-transparent border-secondary">
-                    </div>
-                    <button type="button" class="btn btn-outline-info w-100" onclick="executarPrevisao()">
-                        Invocar Previsão
-                    </button>
-                </form>
-            </div>
-        </div>
-        
-        <div class="col-md-6 d-flex align-items-center justify-content-center">
-            <div class="text-center">
-                <h5 class="text-secondary mb-4">O Olho de Dialga Vê:</h5>
-                <div class="dialga-eye-badge fs-1 py-4 px-5" id="resultadoPrevisao">
-                    -- hrs
-                </div>
-                <p class="mt-3 text-muted">Ausência projetada com base nos parâmetros temporais.</p>
-            </div>
-        </div>
+<div class='container-fluid'>
+  <h2 class='mb-4 text-primary'>Projeção do Tempo</h2>
+  <div class='row'>
+    <div class='col-md-6'>
+      <div class='dialga-card p-4'>
+        <form id='simulacaoForm'>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Colaborador</label>
+            <select
+              class='form-select bg-transparent border-secondary'
+              id='colabSelect'
+            >
+              <option value=''>Carregando colaboradores...</option>
+            </select>
+          </div>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Ajuste de Carga de Trabalho
+              (hrs)</label>
+            <input
+              type='number'
+              class='form-control bg-transparent border-secondary'
+              id='workload'
+              value='250'
+            />
+          </div>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Hit Target (80-100%)</label>
+            <input
+              type='range'
+              class='form-range'
+              id='hitTarget'
+              min='80'
+              max='100'
+              value='95'
+              oninput='this.nextElementSibling.value = this.value'
+            />
+            <output class='text-info fw-bold'>95</output>%
+          </div>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Mês da Projeção</label>
+            <select
+              class='form-select bg-transparent border-secondary'
+              id='monthInput'
+            >
+              <option value='1'>Janeiro</option>
+              <option value='2'>Fevereiro</option>
+              <option value='3'>Março</option>
+              <option value='4'>Abril</option>
+              <option value='5'>Maio</option>
+              <option value='6'>Junho</option>
+              <option value='7'>Julho</option>
+              <option value='8'>Agosto</option>
+              <option value='9'>Setembro</option>
+              <option value='10'>Outubro</option>
+              <option value='11'>Novembro</option>
+              <option value='12'>Dezembro</option>
+            </select>
+          </div>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Dia da Semana</label>
+            <select
+              class='form-select bg-transparent border-secondary'
+              id='dayOfWeekInput'
+            >
+              <option value='2'>Segunda-feira</option>
+              <option value='3'>Terça-feira</option>
+              <option value='4'>Quarta-feira</option>
+              <option value='5'>Quinta-feira</option>
+              <option value='6'>Sexta-feira</option>
+            </select>
+          </div>
+          <div class='mb-3'>
+            <label class='form-label text-secondary'>Motivo</label>
+            <select
+              class='form-select bg-transparent border-secondary'
+              id='reasonSelect'
+            >
+              <option value=''>Carregando motivos...</option>
+            </select>
+          </div>
+
+          <button
+            type='button'
+            class='btn btn-outline-info w-100'
+            onclick='executarPrevisao()'
+          >
+            Invocar Previsão
+          </button>
+        </form>
+      </div>
     </div>
+
+    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+      <div class='text-center'>
+        <h5 class='text-secondary mb-4'>O Olho de Dialga Vê:</h5>
+        <div class='dialga-eye-badge fs-1 py-4 px-5' id='resultadoPrevisao'>
+          -- hrs
+        </div>
+        <p class='mt-3 text-muted'>Ausência projetada com base nos parâmetros
+          temporais.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script src="/js/simulacao.js">
-   
+<script src='/js/simulacao.js'>
+
 </script>

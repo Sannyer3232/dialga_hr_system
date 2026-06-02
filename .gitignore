@@ -8,3 +8,4 @@ GEMINI.md
 /front-end/build/
 /front-end/node_modules/
 /front-end/.env
+/front-end/logs

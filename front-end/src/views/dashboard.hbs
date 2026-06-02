@@ -4,54 +4,44 @@
   <div class='row mb-4'>
     <div class='col-md-4'>
       <div class='dialga-card p-4'>
-        <h6 class='text-secondary'>Horas de Ausência (Mês Atual)</h6>
-        <h3 class='fw-bold'>124 hrs</h3>
+        <h6 class='text-secondary'>Horas de Ausência (Total Histórico)</h6>
+        <h3 class='fw-bold' id="actualTotal">-- hrs</h3>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card neon-prediction p-4'>
         <h6 class='text-secondary'>Previsão da IA (Próximo Mês)</h6>
-        <h3 class='fw-bold text-info text-shadow'>148 hrs
-          <span class='fs-6 text-danger'>↑ 19%</span></h3>
+        <h3 class='fw-bold text-info text-shadow' id="predictedNext">-- hrs</h3>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card p-4'>
-        <h6 class='text-secondary'>Gap Preditivo</h6>
-        <h3 class='fw-bold text-success'>-2.4 hrs (Alta Precisão)</h3>
+        <h6 class='text-secondary'>Gap Preditivo (Histórico)</h6>
+        <h3 class='fw-bold text-success' id="gapVal">-- hrs</h3>
       </div>
     </div>
   </div>
 
   <div class='row'>
     <div class='col-md-8'>
-      <div class='dialga-card p-4'>
+      <div class='dialga-card p-4 h-100'>
         <h5 class='mb-3'>Realidade vs. Previsão Dialga</h5>
-        <canvas id='gapChart' height='100'></canvas>
+        <div style="position: relative; height: 350px;">
+          <canvas id='gapChart'></canvas>
+        </div>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card p-4 h-100'>
-        <h5 class='mb-3'>Minha Equipe (Risco de Falta)</h5>
-        <ul class='list-group list-group-flush bg-transparent'>
-          <li
-            class='list-group-item bg-transparent d-flex justify-content-between align-items-center'
-          >
-            Carlos Alexandre
-            <span class='badge bg-danger rounded-pill'>Alto</span>
-          </li>
-          <li
-            class='list-group-item bg-transparent d-flex justify-content-between align-items-center'
-          >
-            Fani Tamires
-            <span class='badge bg-success rounded-pill'>Baixo</span>
-          </li>
-        </ul>
+        <h5 class='mb-3'>Minha Equipe (Projeção Próx. Mês)</h5>
+        <div style="height: 350px; overflow-y: auto;" class="custom-scroll">
+          <ul class='list-group list-group-flush bg-transparent' id="teamList">
+            <li class="list-group-item bg-transparent text-secondary">Carregando dados...</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src='/js/dashboard.js'>
-
-</script>
+<script src='/js/dashboard.js'></script>

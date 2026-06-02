@@ -4,19 +4,19 @@ const login = (req: Request, res: Response) => {
   res.render('login', { layout: false }); // Render login without the main layout
 };
 
-const dashboard = (req: Request, res: Response) => {
+const dashboard = async (req: Request, res: Response) => {
   res.render('dashboard', {
     activeDashboard: true,
   });
 };
 
-const simulacao = (req: Request, res: Response) => {
+const simulacao = async (req: Request, res: Response) => {
   res.render('simulacao', {
     activeSimulacao: true,
   });
 };
 
-const metrics = (req: Request, res: Response) => {
+const metrics = async (req: Request, res: Response) => {
   res.render('metrics', {
     activeMetrics: true,
   });
@@ -25,5 +25,7 @@ const metrics = (req: Request, res: Response) => {
 const logout = (req: Request, res: Response) => {
   res.redirect('/login');
 };
+
+
 
 export default { login, dashboard, simulacao, metrics, logout };

@@ -52,4 +52,23 @@ body {
     border-radius: 50px;
     font-weight: bold;
     text-shadow: 0 0 5px $info;
-}
+    }
+
+    // Custom Scrollbar for the Team List
+    .custom-scroll {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: $info;
+        border-radius: 10px;
+        box-shadow: 0 0 5px $info;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: lighten($info, 10%);
+    }
+    }

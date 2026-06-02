@@ -11,7 +11,7 @@ from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from django.conf import settings
 from .service import AbsenteeismPredictor
-from .models import AbsenteeismRegister
+from .models import AbsenteeismRegister, ReasonAbsenteeism
 from django.db.models import Avg
 from datetime import date
 from employees.models import Collaborator
@@ -230,6 +230,28 @@ class ManagerDashboardView(APIView):
             }
         })
 
+
+class CollaboratorListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        collaborators = Collaborator.objects.filter(manager=request.user)
+        data = [
+            {"id": colab.id, "name": colab.full_name}
+            for colab in collaborators
+        ]
+        return Response(data)
+
+class ReasonListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        reasons = ReasonAbsenteeism.objects.all().order_by('code')
+        data = [
+            {"code": r.code, "description": r.description}
+            for r in reasons
+        ]
+        return Response(data)
 
 class CollaboratorSimulationView(APIView):
     permission_classes = [IsAuthenticated]

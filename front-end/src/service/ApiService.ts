@@ -20,20 +20,32 @@ apiClient.interceptors.request.use(config => {
 
 export const RelatoriosAPI = {
     getManagerDashboard: async () => {
-        // GET /absenteeism/manager-dashboard/
-        const response = await apiClient.get('/manager-dashboard/');
-        return response.data;
-    },
-    
-    postCollaboratorSimulation: async (payload: any) => {
-        // POST /absenteeism/collaborator-simulation/
-        const response = await apiClient.post('/collaborator-simulation/', payload);
+        // GET /absenteeism/dashboard/
+        const response = await apiClient.get('/dashboard/');
         return response.data;
     },
 
-    getModelMetrics: async () => {
-        // GET /absenteeism/model-metrics/
-        const response = await apiClient.get('/model-metrics/');
-        return response.data; // Retorna { MAE: X, RMSE: Y, R2: Z, scatter_data: [] }
-    }
+    
+    postCollaboratorSimulation: async (payload: any) => {
+        // POST /absenteeism/simulate/
+        const response = await apiClient.post('/simulate/', payload);
+        return response.data;
+    },
+
+    postModelMetrics: async (percentage: number) => {
+        // POST /absenteeism/model-metrics/
+        const response = await apiClient.post('/model-metrics/', { percentage });
+        return response.data;
+    },
+
+    getEmployees: async () => {
+        // GET /absenteeism/collaborators/
+        const response = await apiClient.get('/collaborators/');
+        return response.data;
+    },
+    getAbsenteeismReasons: async () => {
+        // GET /absenteeism/reasons/
+        const response = await apiClient.get('/reasons/');
+        return response.data;
+    },
 };

@@ -13,6 +13,8 @@ app.engine(
   engine({
     extname: '.hbs',
     defaultLayout: 'main',
+    layoutsDir: `${process.cwd()}/src/views/layout`,
+    partialsDir: `${process.cwd()}/src/views/partials`,
     helpers,
   }),
 );
@@ -21,14 +23,9 @@ app.set('view engine', 'hbs');
 app.set('views', `${process.cwd()}/src/views`);
 app.use(logger('simple'));
 app.use(router);
-app.use('/css', [
-  express.static(`${process.cwd()}/src/public/css`),
-  express.static(`${process.cwd()}/node_modules/bootstrap/dist/css/`),
-]);
-app.use('/js', [
-  express.static(`${process.cwd()}/src/public/js`),
-  express.static(`${process.cwd()}/node_modules/bootstrap/dist/js/`),
-]);
+app.use('/css', express.static(`${process.cwd()}/src/public/css`));
+app.use('/bootstrap', express.static(`${process.cwd()}/node_modules/bootstrap/dist/`));
+app.use('/js', express.static(`${process.cwd()}/src/public/js`));
 app.use(
   '/vendor/chartjs',
   express.static(`${process.cwd()}/node_modules/chart.js/dist/`),
