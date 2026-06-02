@@ -4,7 +4,7 @@ import getEnv from './utils/getEnv.js';
 import helpers from './views/helpers/helper.js';
 import router from './router/router.js';
 import logger from './middlewares/logger.js';
-const PORT = getEnv();
+const PORT= getEnv().PORT;
 
 const app = express();
 
