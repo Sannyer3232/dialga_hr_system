@@ -1,40 +1,3 @@
-async function carregarDadosIniciais() {
-    const token = localStorage.getItem('dialga_token');
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
-
-    try {
-        // Carregar Colaboradores
-        const resColabs = await fetch('http://localhost:8000/absenteeism/collaborators/', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const colabs = await resColabs.json();
-        const selectColab = document.getElementById('colabSelect');
-        if (colabs.length > 0) {
-            selectColab.innerHTML = colabs.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        } else {
-            selectColab.innerHTML = '<option value="">Nenhum colaborador encontrado</option>';
-        }
-
-        // Carregar Motivos
-        const resReasons = await fetch('http://localhost:8000/absenteeism/reasons/', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const reasons = await resReasons.json();
-        const selectReason = document.getElementById('reasonSelect');
-        if (reasons.length > 0) {
-            selectReason.innerHTML = reasons.map(r => `<option value="${r.code}">${r.description}</option>`).join('');
-        } else {
-            selectReason.innerHTML = '<option value="">Nenhum motivo encontrado</option>';
-        }
-
-    } catch (error) {
-        console.error('Erro ao carregar dados iniciais:', error);
-    }
-}
-
 async function executarPrevisao() {
     const colabId = document.getElementById('colabSelect').value;
     const workload = document.getElementById('workload').value;
@@ -42,7 +5,6 @@ async function executarPrevisao() {
     const month = document.getElementById('monthInput').value;
     const dayOfWeek = document.getElementById('dayOfWeekInput').value;
     const reasonCode = document.getElementById('reasonSelect').value;
-    const token = localStorage.getItem('dialga_token');
 
     if (!colabId) {
         alert('Selecione um colaborador.');
@@ -53,11 +15,10 @@ async function executarPrevisao() {
     badge.innerHTML = '<span class="spinner-border text-info" role="status"></span>';
 
     try {
-        const response = await fetch('http://localhost:8000/absenteeism/simulate/', {
+        const response = await fetch('/api/simulate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 collaborator_id: parseInt(colabId),
@@ -80,8 +41,7 @@ async function executarPrevisao() {
     } catch (error) {
         console.error('Erro:', error);
         badge.innerText = '-- hrs';
-        alert('Erro de conexão com a API.');
+        alert('Erro de conexão com o servidor.');
     }
 }
 
-document.addEventListener('DOMContentLoaded', carregarDadosIniciais);

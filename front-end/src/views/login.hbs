@@ -9,39 +9,25 @@
 <body class="bg-dialga-login d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="dialga-card p-5 shadow-lg" style="width: 400px; border-top: 5px solid #00D4FF;">
         <div class="text-center mb-4">
-            <h2 class="text-primary fw-bold">Dialgah HR</h2>
+            <h2 class="text-primary fw-bold">Dialga Recursos Humanos</h2>
             <p class="text-secondary small">Domine o tempo da sua equipe</p>
         </div>
-        <form id="loginForm">
+        
+        {{#if error}}
+        <div class="alert alert-danger small py-2">{{error}}</div>
+        {{/if}}
+
+        <form action="/login" method="POST">
             <div class="mb-3">
                 <label class="form-label text-secondary small">Usuário</label>
-                <input type="text" id="username" class="form-control bg-transparent border-secondary" placeholder="ex: carvalhosannyer">
+                <input type="text" name="username" id="username" class="form-control bg-transparent border-secondary" required>
             </div>
             <div class="mb-4">
                 <label class="form-label text-secondary small">Senha</label>
-                <input type="password" id="password" class="form-control bg-transparent border-secondary">
+                <input type="password" name="password" id="password" class="form-control bg-transparent border-secondary" required>
             </div>
             <button type="submit" class="btn btn-info w-100 fw-bold">Entrar</button>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await axios.post('http://localhost:8000/api/token/', {
-                    username,
-                    password
-                });
-                localStorage.setItem('dialga_token', response.data.access);
-                window.location.href = '/dashboard';
-            } catch (error) {
-                alert('Falha no login: ' + (error.response?.data?.detail || 'Erro de conexão'));
-            }
-        });
-    </script>
 </body>
 </html>

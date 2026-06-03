@@ -5,19 +5,19 @@
     <div class='col-md-4'>
       <div class='dialga-card p-4'>
         <h6 class='text-secondary'>Horas de Ausência (Total Histórico)</h6>
-        <h3 class='fw-bold' id="actualTotal">-- hrs</h3>
+        <h3 class='fw-bold' id="actualTotal">{{data.history.actual_total}} hrs</h3>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card neon-prediction p-4'>
         <h6 class='text-secondary'>Previsão da IA (Próximo Mês)</h6>
-        <h3 class='fw-bold text-info text-shadow' id="predictedNext">-- hrs</h3>
+        <h3 class='fw-bold text-info text-shadow' id="predictedNext">{{data.next_month_projection.total_estimated_hour}} hrs</h3>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card p-4'>
         <h6 class='text-secondary'>Gap Preditivo (Histórico)</h6>
-        <h3 class='fw-bold text-success' id="gapVal">-- hrs</h3>
+        <h3 class='fw-bold text-success' id="gapVal">{{data.history.gap}} hrs</h3>
       </div>
     </div>
   </div>
@@ -36,7 +36,12 @@
         <h5 class='mb-3'>Minha Equipe (Projeção Próx. Mês)</h5>
         <div style="height: 350px; overflow-y: auto;" class="custom-scroll">
           <ul class='list-group list-group-flush bg-transparent' id="teamList">
-            <li class="list-group-item bg-transparent text-secondary">Carregando dados...</li>
+            {{#each teamData}}
+            <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                {{this.collaborator}}
+                <span class="badge bg-info rounded-pill">{{this.estimated_absence_hours}}h</span>
+            </li>
+            {{/each}}
           </ul>
         </div>
       </div>
@@ -44,4 +49,7 @@
   </div>
 </div>
 
+<script>
+    window.CHART_DATA = {{{chartData}}};
+</script>
 <script src='/js/dashboard.js'></script>

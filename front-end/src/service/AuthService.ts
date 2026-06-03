@@ -12,11 +12,7 @@ export class AuthService {
       return response.data.access;
     } catch (error) {
       console.error('Falha na autenticação', error);
-      return null;
+      throw error;
     }
-  }
-
-  static setToken(token: string) {
-    localStorage.setItem('dialga_token', token);
   }
 }

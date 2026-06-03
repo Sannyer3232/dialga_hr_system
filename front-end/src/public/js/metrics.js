@@ -2,14 +2,12 @@ let scatterChart;
 
 async function atualizarMetricas() {
     const percentage = document.getElementById('percentageInput').value;
-    const token = localStorage.getItem('dialga_token');
 
     try {
-        const response = await fetch('http://localhost:8000/absenteeism/model-metrics/', {
+        const response = await fetch('/api/metrics', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ percentage: parseFloat(percentage) })
         });
@@ -19,7 +17,10 @@ async function atualizarMetricas() {
         if (response.ok) {
             document.getElementById('maeVal').innerText = `${data.metrics.mae.toFixed(2)} hrs`;
             document.getElementById('rmseVal').innerText = `${data.metrics.rmse.toFixed(2)} hrs`;
-            document.getElementById('r2Val').innerText = data.metrics.r2_score.toFixed(4);
+            
+            // Sincronizado com o roundPercentageHelper (digits: 2)
+            const r2Percent = (Number(data.metrics.r2_score.toFixed(2)) * 100);
+            document.getElementById('r2Val').innerText = `${r2Percent}%`;
 
             renderScatterChart(data.scatter_plot_data);
         } else {
@@ -27,7 +28,7 @@ async function atualizarMetricas() {
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro de conexão com a API.');
+        alert('Erro de conexão com o servidor.');
     }
 }
 
@@ -71,5 +72,8 @@ function renderScatterChart(scatterData) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    atualizarMetricas();
+    if (window.SCATTER_DATA) {
+        renderScatterChart(window.SCATTER_DATA);
+    }
 });
+

@@ -7,4 +7,14 @@ function listProfs(profs: Profs[]) {
   return `<ul> ${list} </ul>`;
 }
 
-export default {listProfs};
+function roundHelper(num: number, digits: number){
+
+    return Number(num.toFixed(digits)); 
+}
+
+function roundPercentageHelper(num: number, digits: number){
+
+    return (Number(num.toFixed(digits))*100); 
+}
+
+export default {listProfs, roundHelper, roundPercentageHelper};

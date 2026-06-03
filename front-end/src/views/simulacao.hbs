@@ -10,7 +10,9 @@
               class='form-select bg-transparent border-secondary'
               id='colabSelect'
             >
-              <option value=''>Carregando colaboradores...</option>
+              {{#each collaborators}}
+              <option value="{{this.id}}">{{this.name}}</option>
+              {{/each}}
             </select>
           </div>
           <div class='mb-3'>
@@ -75,7 +77,9 @@
               class='form-select bg-transparent border-secondary'
               id='reasonSelect'
             >
-              <option value=''>Carregando motivos...</option>
+              {{#each reasons}}
+              <option value="{{this.code}}">{{this.description}}</option>
+              {{/each}}
             </select>
           </div>
 
