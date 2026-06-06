@@ -1,23 +1,36 @@
 <div class='container-fluid'>
-  <h2 class='mb-4 text-primary'>Visão Geral da Equipe</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class='text-primary mb-0'>Dashboard de Gestão de Absenteísmo</h2>
+    <button class="btn btn-outline-info fw-bold" type="button" data-bs-toggle="offcanvas" data-bs-target="#simulationSidebar">
+        <i class="bi bi-sliders"></i> Personalizar Contexto
+    </button>
+  </div>
 
+  <!-- Cards de Resumo do Mês Atual -->
+  <h5 class="text-secondary mb-3"><i class="bi bi-calendar-check"></i> Mês Atual - Métricas em Tempo Real</h5>
   <div class='row mb-4'>
-    <div class='col-md-4'>
+    <div class='col-md-3'>
       <div class='dialga-card p-4'>
-        <h6 class='text-secondary'>Horas de Ausência (Total Histórico)</h6>
-        <h3 class='fw-bold' id="actualTotal">{{data.history.actual_total}} hrs</h3>
+        <h6 class='text-secondary'>Faltas Reais - Acumulado</h6>
+        <h3 class='fw-bold' id="actualCurrent">{{data.current_month.actual_total}} hrs</h3>
       </div>
     </div>
-    <div class='col-md-4'>
+    <div class='col-md-3'>
+      <div class='dialga-card p-4'>
+        <h6 class='text-secondary'>Previsão Para este Mês</h6>
+        <h3 class='fw-bold text-info' id="predictedCurrent">{{data.current_month.predicted_total}} hrs</h3>
+      </div>
+    </div>
+    <div class='col-md-3'>
+      <div class='dialga-card p-4'>
+        <h6 class='text-secondary'>Gap Atual</h6>
+        <h3 class='fw-bold {{#ifCond data.current_month.gap ">" 0}}text-danger{{else}}text-success{{/ifCond}}' id="gapCurrent">{{data.current_month.gap}} hrs</h3>
+      </div>
+    </div>
+    <div class='col-md-3'>
       <div class='dialga-card neon-prediction p-4'>
-        <h6 class='text-secondary'>Previsão da IA (Próximo Mês)</h6>
-        <h3 class='fw-bold text-info text-shadow' id="predictedNext">{{data.next_month_projection.total_estimated_hour}} hrs</h3>
-      </div>
-    </div>
-    <div class='col-md-4'>
-      <div class='dialga-card p-4'>
-        <h6 class='text-secondary'>Gap Preditivo (Histórico)</h6>
-        <h3 class='fw-bold text-success' id="gapVal">{{data.history.gap}} hrs</h3>
+        <h6 class='text-secondary'>Projeção (Mês Seguinte)</h6>
+        <h3 class='fw-bold text-info text-shadow' id="predictedNext">{{data.next_month.total_estimated_hour}} hrs</h3>
       </div>
     </div>
   </div>
@@ -25,26 +38,81 @@
   <div class='row'>
     <div class='col-md-8'>
       <div class='dialga-card p-4 h-100'>
-        <h5 class='mb-3'>Realidade vs. Previsão Dialga</h5>
-        <div style="position: relative; height: 350px;">
+        <h5 class='mb-3'>Histórico Evolutivo: Realidade vs. IA</h5>
+        <div style="position: relative; height: 400px;">
           <canvas id='gapChart'></canvas>
         </div>
       </div>
     </div>
     <div class='col-md-4'>
       <div class='dialga-card p-4 h-100'>
-        <h5 class='mb-3'>Minha Equipe (Projeção Próx. Mês)</h5>
+        <h5 class='mb-3'>Minha Equipe (Faltas Estimadas)</h5>
+        <p class="text-secondary small mb-3">Projeção para o próximo mês ({{data.next_month.month_reference}}/{{data.next_month.year_reference}})</p>
         <div style="height: 350px; overflow-y: auto;" class="custom-scroll">
           <ul class='list-group list-group-flush bg-transparent' id="teamList">
-            {{#each teamData}}
-            <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
-                {{this.collaborator}}
+            {{#each data.next_month.details}}
+            <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-secondary-subtle">
+                <span class="text-dark">{{this.collaborator}}</span>
                 <span class="badge bg-info rounded-pill">{{this.estimated_absence_hours}}h</span>
             </li>
             {{/each}}
           </ul>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Sidebar de Simulação (Offcanvas) -->
+  <div class="offcanvas offcanvas-end bg-dark-dialga text-white" tabindex="-1" id="simulationSidebar" aria-labelledby="simulationSidebarLabel">
+    <div class="offcanvas-header border-bottom border-secondary">
+      <h5 class="offcanvas-title text-info" id="simulationSidebarLabel"><i class="bi bi-magic"></i> Simulador de Dashboard</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="text-secondary small mb-4">Ajuste os parâmetros abaixo para simular como mudanças no contexto da empresa afetariam o absenteísmo previsto.</p>
+
+      <div class="mb-4">
+        <label class="form-label small text-secondary">Carga Horária Média (Dia)</label>
+        <div class="d-flex align-items-center">
+            <input type="range" class="form-range me-2" min="150" max="350" step="1" id="workloadSlider" value="250" oninput="document.getElementById('workloadVal').innerText = this.value">
+            <span id="workloadVal" class="badge bg-info">250</span>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-secondary">Meta de Produtividade (%)</label>
+        <div class="d-flex align-items-center">
+            <input type="range" class="form-range me-2" min="80" max="100" step="1" id="targetSlider" value="95" oninput="document.getElementById('targetVal').innerText = this.value">
+            <span id="targetVal" class="badge bg-info">95</span>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-secondary">Motivo Padrão de Ausência</label>
+        <select class="form-select bg-transparent text-dark border-secondary" id="reasonSelect">
+            {{#each reasons}}
+            <option value="{{this.code}}" class="bg-white text-dark">{{this.description}}</option>
+            {{/each}}
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-secondary">Dia da Semana Simulado</label>
+        <select class="form-select bg-transparent text-dark border-secondary" id="daySelect">
+            <option value="2" class="bg-white text-dark">Segunda-feira</option>
+            <option value="3" class="bg-white text-dark">Terça-feira</option>
+            <option value="4" class="bg-white text-dark" selected>Quarta-feira</option>
+            <option value="5" class="bg-white text-dark">Quinta-feira</option>
+            <option value="6" class="bg-white text-dark">Sexta-feira</option>
+        </select>
+      </div>
+
+      <button class="btn btn-info w-100 fw-bold mt-3" onclick="atualizarDashboardCustom()">
+          Aplicar Simulação
+      </button>
+      <button class="btn btn-outline-secondary w-100 mt-2" onclick="window.location.reload()">
+          Resetar Padroes
+      </button>
     </div>
   </div>
 </div>

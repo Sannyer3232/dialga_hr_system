@@ -34,6 +34,10 @@ body {
     
     .nav-link {
         color: $secondary;
+        font-size: 1.15rem;
+        font-weight: 500;
+        padding: 0.8rem 1rem;
+        
         &:hover, &.active {
             color: $info;
             background: rgba(255,255,255,0.05);
@@ -71,4 +75,25 @@ body {
     &::-webkit-scrollbar-thumb:hover {
         background: lighten($info, 10%);
     }
-    }
+}
+
+// Global Loader
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 25, 41, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none; // Controlled by JS
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.loader-content {
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}

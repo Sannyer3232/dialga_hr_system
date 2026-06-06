@@ -1,7 +1,19 @@
 let scatterChart;
 
+function syncInputs(source) {
+    const slider = document.getElementById('percentageSlider');
+    const input = document.getElementById('percentageInput');
+
+    if (source === 'slider') {
+        input.value = slider.value;
+    } else {
+        slider.value = input.value;
+    }
+}
+
 async function atualizarMetricas() {
     const percentage = document.getElementById('percentageInput').value;
+    showLoader();
 
     try {
         const response = await fetch('/api/metrics', {
@@ -22,6 +34,8 @@ async function atualizarMetricas() {
             const r2Percent = (Number(data.metrics.r2_score.toFixed(2)) * 100);
             document.getElementById('r2Val').innerText = `${r2Percent}%`;
 
+            document.getElementById('totalRecords').innerText = data.scatter_plot_data.length;
+
             renderScatterChart(data.scatter_plot_data);
         } else {
             alert('Erro ao buscar métricas: ' + (data.error || 'Erro desconhecido'));
@@ -29,6 +43,8 @@ async function atualizarMetricas() {
     } catch (error) {
         console.error('Erro:', error);
         alert('Erro de conexão com o servidor.');
+    } finally {
+        hideLoader();
     }
 }
 

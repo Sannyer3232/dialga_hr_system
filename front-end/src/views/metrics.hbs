@@ -8,7 +8,8 @@
                     <p class="text-secondary mb-0">Selecione a porcentagem da base de teste para calcular as métricas.</p>
                 </div>
                 <div class="d-flex align-items-center">
-                    <input type="number" id="percentageInput" class="form-control bg-transparent border-secondary me-2" style="width: 100px;" value="20" min="1" max="100">
+                    <input type="range" id="percentageSlider" class="form-range me-3" style="width: 200px;" value="20" min="1" max="100" oninput="syncInputs('slider')">
+                    <input type="number" id="percentageInput" class="form-control bg-transparent border-secondary me-2" style="width: 80px;" value="20" min="1" max="100" oninput="syncInputs('input')">
                     <button class="btn btn-info fw-bold" onclick="atualizarMetricas()">Calcular</button>
                 </div>
             </div>
@@ -16,19 +17,25 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="dialga-card p-4 text-center">
-                <h6 class="text-secondary">MAE (Erro Médio Absoluto)</h6>
+                <h6 class="text-secondary">Registros Processados</h6>
+                <h3 class="fw-bold text-info" id="totalRecords">{{scatterDataLength}}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dialga-card p-4 text-center">
+                <h6 class="text-secondary">MAE (Erro Médio)</h6>
                 <h3 class="fw-bold text-info" id="maeVal">{{roundHelper metrics.mae 2}} hrs</h3>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="dialga-card p-4 text-center">
-                <h6 class="text-secondary">RMSE (Raiz do Erro Quadrático)</h6>
+                <h6 class="text-secondary">RMSE (Raiz do Erro)</h6>
                 <h3 class="fw-bold text-info" id="rmseVal">{{roundHelper metrics.rmse 2}} hrs</h3>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="dialga-card p-4 text-center">
                 <h6 class="text-secondary">R² Score (Aderência)</h6>
                 <h3 class="fw-bold text-info" id="r2Val">{{roundPercentageHelper metrics.r2_score 2}}%</h3>

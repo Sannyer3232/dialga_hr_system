@@ -28,16 +28,36 @@ class AbsenteeismPredictor:
     def predict(self, features_array):
         """
             Recebe o array/lista com as features, 
-            aplica o scaler, faz o reshape e retorna a predição
+            aplica o scaler, faz o reshape e retorna a predição.
+            Garante que o resultado nunca seja negativo.
         """
-
         X_scaled = self._scaler.transform([features_array])
-
         X_reshaped = X_scaled.reshape((X_scaled.shape[0], 1, X_scaled.shape[1]))
+        prediction = self._model.predict(X_reshaped, verbose=0)
+        
+        # Clip para 0 (evita horas negativas)
+        result = max(0.0, float(prediction[0][0]))
+        return round(result, 2)
 
-        prediction = self._model.predict(X_reshaped, verbose= 0)
-
-        return round(float(prediction[0][0]), 2)
+    def predict_bulk(self, features_matrix):
+        """
+            Processa múltiplas linhas de uma vez (vetorizado).
+            MUITO mais rápido para arquivos grandes.
+        """
+        if not features_matrix:
+            return []
+            
+        # 1. Transformar tudo de uma vez
+        X_scaled = self._scaler.transform(features_matrix)
+        
+        # 2. Reshape (amostras, 1, características)
+        X_reshaped = X_scaled.reshape((X_scaled.shape[0], 1, X_scaled.shape[1]))
+        
+        # 3. Predição em lote
+        predictions = self._model.predict(X_reshaped, verbose=0)
+        
+        # 4. Flatten, clip para 0 e arredondar
+        return [round(max(0.0, float(p[0])), 2) for p in predictions]
 
     def predict_collaborator(self, collaborator, context_data):
             """

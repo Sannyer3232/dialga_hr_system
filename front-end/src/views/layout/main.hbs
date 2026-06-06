@@ -3,11 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Dialgah HR System | Mastery over Time</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
 
 </head>
 <body>
+    <div id="global-loader" class="loader-overlay" style="display: none;">
+        <div class="loader-content">
+            <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;"></div>
+            <h5 class="mt-3 text-info">Processando Inteligência Dialga...</h5>
+        </div>
+    </div>
+
     <div class="d-flex">
         {{> sidebar}}
         <div class="w-100">
@@ -21,4 +32,23 @@
     
     <script src="/vendor/chartjs/chart.umd.js"></script>
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
-</html>
+    <script>
+        function showLoader() {
+            document.getElementById('global-loader').style.display = 'flex';
+        }
+
+        function hideLoader() {
+            document.getElementById('global-loader').style.display = 'none';
+        }
+
+        // Show loader on page navigation via sidebar links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Only show if it's a real navigation and not just a hash or JS trigger
+                if (link.getAttribute('href') && !link.getAttribute('href').startsWith('#')) {
+                    showLoader();
+                }
+            });
+        });
+    </script>
+    </html>
