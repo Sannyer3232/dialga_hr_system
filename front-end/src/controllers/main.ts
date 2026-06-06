@@ -18,7 +18,8 @@ const postLogin = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     const token = await AuthService.login(username, password);
-    res.setHeader('Set-Cookie', `dialga_token=${token}; Path=/; HttpOnly`);
+    // Persiste por 24 horas (86400 segundos)
+    res.setHeader('Set-Cookie', `dialga_token=${token}; Path=/; HttpOnly; Max-Age=86400`);
     res.redirect('/dashboard');
   } catch (error) {
     res.render('login', { error: 'Usuário ou senha inválidos', layout: false });
