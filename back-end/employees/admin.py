@@ -13,7 +13,7 @@ class FamiliarProgileInLine(admin.StackedInline):
 
 @admin.register(Collaborator)
 class CollaboratorAdmin(admin.ModelAdmin):
-    list_display = ('id','age','education_level','date_of_birth', 'service_years', 'work_distance')
+    list_display = ('id','full_name','age','education_level','date_of_birth', 'service_years', 'work_distance')
     search_fields = ('id',)
     list_filter = ('education_level',)
     inlines = [HealthProfileInline, FamiliarProgileInLine]

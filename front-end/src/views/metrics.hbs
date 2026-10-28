@@ -1,0 +1,61 @@
+<div class="container-fluid">
+    <h2 class="mb-4 text-primary">Métricas de Precisão da IA</h2>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="dialga-card p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-0">Configuração de Validação</h5>
+                    <p class="text-secondary mb-0">Selecione a porcentagem da base de teste para calcular as métricas.</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <input type="range" id="percentageSlider" class="form-range me-3" style="width: 200px;" value="20" min="1" max="100" oninput="syncInputs('slider')">
+                    <input type="number" id="percentageInput" class="form-control bg-transparent border-secondary me-2" style="width: 80px;" value="20" min="1" max="100" oninput="syncInputs('input')">
+                    <button class="btn btn-info fw-bold" onclick="atualizarMetricas()">Calcular</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="dialga-card p-4 text-center">
+                <h6 class="text-secondary">Registros Processados</h6>
+                <h3 class="fw-bold text-info" id="totalRecords">{{scatterDataLength}}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dialga-card p-4 text-center">
+                <h6 class="text-secondary">MAE (Erro Médio)</h6>
+                <h3 class="fw-bold text-info" id="maeVal">{{roundHelper metrics.mae 2}} hrs</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dialga-card p-4 text-center">
+                <h6 class="text-secondary">RMSE (Raiz do Erro)</h6>
+                <h3 class="fw-bold text-info" id="rmseVal">{{roundHelper metrics.rmse 2}} hrs</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dialga-card p-4 text-center">
+                <h6 class="text-secondary">R² Score (Aderência)</h6>
+                <h3 class="fw-bold text-info" id="r2Val">{{roundPercentageHelper metrics.r2_score 2}}%</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dialga-card p-4">
+                <h5 class="mb-3">Gráfico de Dispersão (Real vs. Predito)</h5>
+                <div style="position: relative; height: 450px;">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.SCATTER_DATA = {{{scatterData}}};
+</script>
+<script src="/js/metrics.js"></script>

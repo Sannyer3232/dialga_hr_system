@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import date
-
+from django.conf import settings
 class EducationLevel(models.Model):
 
     id = models.AutoField(unique=True, verbose_name="ID", primary_key=True)
@@ -14,6 +14,7 @@ class EducationLevel(models.Model):
 class Collaborator(models.Model):
 
     id = models.AutoField(unique=True, verbose_name="id",primary_key=True)
+    full_name = models.CharField(max_length=250, verbose_name="Full Name")
     date_of_birth = models.DateField(verbose_name="Date of birth")
     service_years = models.IntegerField(verbose_name="Service times in years")
     work_distance = models.IntegerField(verbose_name="Distance from Residence to Work")
@@ -25,12 +26,21 @@ class Collaborator(models.Model):
         verbose_name="Education level"
     )
 
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Manager",
+        related_name="managed_collaborator"
+    )
+
     @property
     def age(self):
         #Calcula a idade do colaborador com base na data de nascimento
         
         now = date.today()
-        birthday_has_passed = (now.month, now.day) >= (self.data_of_birth.month, self.data_of_birth.month.day)
+        birthday_has_passed = (now.month, now.day) >= (self.date_of_birth.month, self.date_of_birth.day)
         years = now.year - self.date_of_birth.year
         return years if birthday_has_passed else years - 1
     
