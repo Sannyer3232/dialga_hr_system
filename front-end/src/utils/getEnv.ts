@@ -6,6 +6,7 @@ function getEnv() {
   return cleanEnv(process.env, {
     PORT: port({ default: 5566 }),
     LOGGER_PATH: str({ default: 'logs' }),
+    API_BASE_URL: str({ default: 'http://localhost:8000/api' }),
   });
 }
 

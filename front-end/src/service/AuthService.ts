@@ -1,6 +1,7 @@
 import axios from 'axios';
+import getEnv from '../utils/getEnv.js';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = getEnv().API_BASE_URL;
 
 export class AuthService {
   static async login(username: string, password: string) {
